@@ -37,7 +37,7 @@ class RegionMap(pyui.View):
         super().__init__()
         self.data = data
         self._surface = None
-
+        self.resize((500, 500))
         self.rects = []
         for rid, name, rtype, coords, evilness in data:
             coordlist = coords.split("|")
@@ -53,6 +53,11 @@ class RegionMap(pyui.View):
     def zoom(self, val):
         self.zoom = val
         return self
+
+    def constrain(self, available=None):
+        if available is None:
+            available = (500, 500)
+        return (500, 500)
 
     def draw(self, renderer, rect):
         #boxRGBA(renderer, 10, 10, 20, 20, 0, 0, 0, 255)
@@ -87,12 +92,23 @@ class LegendsMapView(pyui.View):
     def mousewheel(self, amt):
         print(amt)
         self.zoom.value += amt[1]
+        self.zoom.value = max(1, min(self.zoom.value, 1000))
+        self.needs_render = True
 
 
     def content(self):
         yield pyui.VStack(
-            pyui.Slider(self.zoom, 1, 100),
             RegionMap(self.data).zoom(self.zoom),
+            pyui.Spacer(),
+            pyui.Rectangle(
+                pyui.VStack(
+                    pyui.HStack(
+                        pyui.Text("Zoom: "),
+                        pyui.Slider(self.zoom, 1, 1000),
+                    ),
+                    pyui.Text("Hello and welcome to dwarf")
+                )
+            ).background(55, 55, 55).size(height=25)
         )
 
 
@@ -109,5 +125,5 @@ if __name__ == "__main__":
         data.append(row)
 
     app = pyui.Application("club.thingstead.DwarfLegendsDatabase")
-    app.window("DwarfLegends", LegendsMapView(data))
+    app.window("Legends Map", LegendsMapView(data))
     app.run()
