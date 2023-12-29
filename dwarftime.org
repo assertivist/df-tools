@@ -1,0 +1,28 @@
+* legends browser makes me sad
+* first look at the structure of the dfhack export - xq (but really jq)
+** jq is an insanely useful tool to look at large amounts of json
+** can't always rely on spot check or your text editor, especially with 88mb of text
+** google "shape of json jq" "all paths in json jq"
+** but wait, this is xml?
+** enter xq
+* wow, it looks really normal (db kind)
+** a list of collections of items
+** some funniness in structures and historical events
+** understandable, most columns live in historical events
+* to sqlite for !!further analysis!!
+** write some python to ingest the XM
+*** google a little function to dump etree into json
+*** use this to cheat when we recurse too far into the weeds
+*** iterate over the first level of collections, but if we see any other deeper collections, just dump json into a column
+*** should be fine, right?
+** sqlite3 is fast! everyone already knows this
+*** but lightning fast for this purpose, with proper transactions
+** is perfect for small amount of data, and a script to deploy to people who don't want to set up a 'real' db
+* OK, lets make a map
+** rivers
+*** five integers per point in sequence
+*** X, Y biome then X,Y,Z tile in biome
+*** end biome tile instead of endpoint
+*** rivers flow to specific ocean biome tiles
+** regions
+*** built only with biome sized tiles
