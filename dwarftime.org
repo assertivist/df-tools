@@ -25,4 +25,17 @@
 *** end biome tile instead of endpoint
 *** rivers flow to specific ocean biome tiles
 ** regions
-*** built only with biome sized tiles
+*** region boundaries are the largest "tile" size
+*** will provide the background of our map
+*** second largest tile size are "embark" tiles
+*** DONE how many embark tiles per "world" tile?
+CLOSED: [2023-12-30 Sat 04:36]
+**** wiki says 768 square. this seems to make sense for rivers?
+**** But sites have larger dimensions
+**** turns out rivers have even bigger dimensions than sites
+**** dfhack dox had the answer: there is a separate grid for features
+**** there are 2,304 "feature shell" grid squares in a region tile
+***** used for sites/structures
+**** there are 12,288 "local" cells in a region as well
+***** rivers use this
+*** each embark tile is 48x48 game tiles x/y
