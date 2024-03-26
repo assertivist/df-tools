@@ -1,3 +1,5 @@
+--@ module = true
+
 local redis = {
     _VERSION     = 'redis-lua 2.0.5-dev',
     _DESCRIPTION = 'A Lua client library for the redis key value storage system.',
