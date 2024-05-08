@@ -5,7 +5,9 @@ local redis = {
     _DESCRIPTION = 'A Lua client library for the redis key value storage system.',
     _COPYRIGHT   = 'Copyright (C) 2009-2012 Daniele Alessandri',
 }
--- hacked up to work with dfhack luasocket by croc in march of 2023
+-- hacked up by croc in march of 2023
+--   - march 2023 ported to use dfhack socket
+--   - may 2023 added stream support (xadd xrange)
 
 -- The following line is used for backwards compatibility in order to keep the `Redis`
 -- global module name. Using `Redis` is now deprecated so you should explicitly assign
@@ -1082,6 +1084,9 @@ redis.commands = {
         request  = scan_request,
         response = zscan_response,
     }),
+
+    -- commands operating on streams
+    xadd             = command('XADD'),
 
     -- commands operating on hashes
     hset             = command('HSET', {        -- >= 2.0
