@@ -87,12 +87,13 @@ end
 
 local function ns_info(text) ns_log("info", text) end
 local function ns_error(text) ns_log("error", text) end
+local function ns_debug(text) ns_log("debug", text) end
 
 
 local function yield_if_timeout()
     local now_ms = dfhack.getTickCount()
     if now_ms - last_update_ms > YIELD_TIMEOUT_MS then
-        --script.sleep(1, 'frames')
+        script.sleep(1, 'frames')
         YIELD_COUNT = YIELD_COUNT + 1
         last_update_ms = dfhack.getTickCount()
     end
@@ -184,14 +185,20 @@ local function collapser(thing, path, depth)
     end
     local collapsed = {}
     local girth = 0
+    ns_debug("starting iteration on " .. path)
     for k, v in pairs(thing) do
         local sub_path = path .. "." .. k
+        ns_debug("now going to either access or collapse " .. sub_path)
         yield_if_timeout()
         if type(v) == "table" or type(v) == "userdata" then
+            ns_debug("collapsing " .. sub_path .. " k: " .. k)
             collapsed[k] = collapser(v, sub_path, depth + 1)
+            ns_debug("result: " .. tostring(collapsed[k]))
         else
+            ns_debug("accessing" .. sub_path .. " k: " .. tostring(k) .. " v: " .. tostring(v))
             collapsed[k] = v
         end
+        ns_debug(sub_path .. " was saved successfully")
         girth = girth + 1
         if girth > 2500 then
             ns_error("Bailing on " .. sub_path .. " because of its immense Girth.")
@@ -244,7 +251,6 @@ end
 local function legends_exp()
     --local wname = df2utf(TranslateName(world.world_data.name))
     --local waltname = df2utf(TranslateName(world.world_data.name, 1))
-    
     ns_info("Legends mode detected, starting " .. wslug .. " export")
     yield_if_timeout()
     descender(world, wslug, 0)
@@ -254,15 +260,14 @@ local function legends_exp()
 end
 
 if dfhack_flags.enable_state then
-
     if state.current == "none" then
         db_connect()
         state:connect()
     end
     
     if dfhack.world.isLegends() and state.current == "connected" then
-        --script.start(legends_exp)
-        legends_exp()
+        script.start(legends_exp)
+        --legends_exp()
         ns_info("asdf")
     end
 end
